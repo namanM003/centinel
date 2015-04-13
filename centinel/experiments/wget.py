@@ -1,6 +1,6 @@
 import os
 import logging
-
+import time
 from centinel.experiment import Experiment
 
 class CensorShipExperiment(Experiment):
@@ -21,12 +21,17 @@ class CensorShipExperiment(Experiment):
         }
 
         logging.info("Running wget to %s" % self.host)
-        response = os.system("wget " + self.host + " | grep \"Length:\" "+ " >results.txt 2>&1")
-
-        if response != 0:
+        response = os.system("wget -O " + self.host+ " "+self.host)
+	#os.system("ls -l "+self.host+" > file_stat.txt")
+	size_info = os.stat(self.host)
+	size = size_info.st_size
+	print size
+        if size != 0:
             result["success"] = 'true'
+	    result["size"] = size
         else:
             result["success"] = 'false'
-
+	    result["size"] = size	
         self.results.append(result)
+#	time.sleep(20)
 	print response
